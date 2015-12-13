@@ -15,7 +15,10 @@ public class ForwardVelocity : MonoBehaviour
 	
 	void Update()
     {
-        rb.MovePosition(transform.position + (Vector3.up * speed * Time.deltaTime));
+		if (Input.GetKey("up"))
+		{
+        	rb.MovePosition(transform.position + (Vector3.up * speed * Time.deltaTime));
+		}
         
 	}
 }

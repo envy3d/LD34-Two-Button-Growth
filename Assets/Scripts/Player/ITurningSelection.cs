@@ -1,6 +1,5 @@
 ﻿
 public interface ITurningSelection
 {
-    void SetStartingDirection(int startingDir);
-    int GetNewTurningDirection();
+    int GetNewTurningDirection(int currentDir);
 }

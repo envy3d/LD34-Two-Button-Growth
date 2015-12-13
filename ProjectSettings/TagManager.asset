@@ -13,20 +13,13 @@ TagManager:
   - UI
   - 
   - 
-<<<<<<< HEAD
-  - UI P1
-  - UI P2
-  - UI P3
-  - UI Obstacle
-=======
-  - Vehicle
-  - Obstacle
-  - Wall
-  - 
->>>>>>> refs/remotes/origin/nick_dev
-  - 
-  - 
-  - 
+  - UI1
+  - UI2
+  - UI3
+  - UI4
+  - vehicle
+  - obstacle
+  - wall
   - 
   - 
   - 
@@ -49,23 +42,20 @@ TagManager:
     uniqueID: 0
     locked: 0
   - name: Background
-    uniqueID: 2531075831
+    uniqueID: 1125320845
     locked: 0
   - name: Ground
-    uniqueID: 3104008335
+    uniqueID: 347762355
     locked: 0
-  - name: Back Environment
-    uniqueID: 3950529291
+  - name: Back environment
+    uniqueID: 1849517193
     locked: 0
-  - name: Cars
-    uniqueID: 1749357433
+  - name: Vehicle
+    uniqueID: 1777443131
     locked: 0
-  - name: Items
-    uniqueID: 739364781
-    locked: 0
-  - name: Fore Environment
-    uniqueID: 1828732903
+  - name: Obstacle Layer
+    uniqueID: 1874864161
     locked: 0
   - name: UI
-    uniqueID: 2966292349
+    uniqueID: 1790469451
     locked: 0

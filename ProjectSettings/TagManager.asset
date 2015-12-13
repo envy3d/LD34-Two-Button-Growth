@@ -13,10 +13,17 @@ TagManager:
   - UI
   - 
   - 
+<<<<<<< HEAD
+  - UI P1
+  - UI P2
+  - UI P3
+  - UI Obstacle
+=======
   - Vehicle
   - Obstacle
   - Wall
   - 
+>>>>>>> refs/remotes/origin/nick_dev
   - 
   - 
   - 
@@ -58,4 +65,7 @@ TagManager:
     locked: 0
   - name: Fore Environment
     uniqueID: 1828732903
+    locked: 0
+  - name: UI
+    uniqueID: 2966292349
     locked: 0

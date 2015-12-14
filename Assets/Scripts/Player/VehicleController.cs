@@ -178,4 +178,10 @@ public class VehicleController : MonoBehaviour
         canControlSteering = true;
     }
 
+    public void EndCar()
+    {
+        canControlEngine = false;
+        canControlSteering = false;
+    }
+
 }

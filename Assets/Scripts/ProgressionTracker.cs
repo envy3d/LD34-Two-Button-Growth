@@ -74,7 +74,6 @@ public class ProgressionTracker : MonoBehaviour
             return t;
         }
 
-        float[] samples = new float[numberOfSamples];
         float startSample = t - (numberOfSamples / 2.0f) * sampleSpacing;
         startSample = startSample < 0 ? 1 + startSample : startSample;
 

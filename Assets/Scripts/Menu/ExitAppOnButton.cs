@@ -1,15 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class ExitAppOnButton : MonoBehaviour {
+public class ExitAppOnButton : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public string buttonName = "Cancel";
+
+    void Update()
+    {
+        if (Input.GetButtonDown(buttonName))
+            Application.Quit();
+    }
 }

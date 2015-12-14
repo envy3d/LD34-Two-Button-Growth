@@ -1,5 +1,5 @@
 
-﻿using UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(MeshCollider))]
 public class PolyColToMeshCol : MonoBehaviour

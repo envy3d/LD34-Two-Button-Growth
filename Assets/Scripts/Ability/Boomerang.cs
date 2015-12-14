@@ -48,6 +48,7 @@ public class Boomerang : MonoBehaviour
     public void Launch(GameObject launchedFrom)
     {
         launchedFromGO = launchedFrom;
+        StartCoroutine(RemoveLaunchProtection());
     }
 
     private IEnumerator RemoveLaunchProtection()

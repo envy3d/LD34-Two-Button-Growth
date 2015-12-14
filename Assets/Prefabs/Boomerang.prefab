@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 121780}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_Children: []
   m_Father: {fileID: 450706}
   m_RootOrder: 0
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a767d84c7cfd66d46b0ceaddbabe5283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  degreesPerSecond: 180
+  degreesPerSecond: 900
 --- !u!114 &11477830
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -136,7 +136,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.9
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!212 &21278652
 SpriteRenderer:
@@ -164,8 +164,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1266353357
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ad4e7c9b13caec14599be33500e77dd6, type: 3}
-  m_Color: {r: 0.9117647, g: 0.5229239, b: 0.836678, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b555bdb0580d57249a9bfd53462054ab, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &100100000
@@ -186,6 +186,31 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: targetKillEngineTime
       value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b555bdb0580d57249a9bfd53462054ab,
+        type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

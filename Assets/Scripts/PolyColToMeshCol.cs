@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿using UnityEngine;
+=======
+using UnityEngine;
+>>>>>>> refs/remotes/origin/dev
 
 [RequireComponent(typeof(SpriteRenderer), typeof(MeshCollider))]
 public class PolyColToMeshCol : MonoBehaviour

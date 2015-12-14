@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class VehicleController : MonoBehaviour
 {
-    public string turnInputButton = "Jump";
+    public string turnInputButton = "P1B1";
     public event EventHandler<CombinedModifierEventArgs> OnModifyWheelForce;
     CombinedModifierEventArgs wheelForceModEventArgs = new CombinedModifierEventArgs();
     public float maxVelocity = 10;
@@ -107,5 +108,19 @@ public class VehicleController : MonoBehaviour
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * wheelForce, Color.cyan);
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * new Vector3(-rb.angularVelocity.z, 0, 0), Color.yellow);
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * new Vector3(currTurnAngle, 0, 0), Color.blue);
+    }
+
+    public void Boost()
+    {
+        //Debug.Log("start boost");
+        maxForce += 2400;
+        StartCoroutine(StopTime());
+    }
+
+    private IEnumerator StopTime()
+    {
+        yield return new WaitForSeconds(2);
+        maxForce -= 2400;
+        //Debug.Log("end");
     }
 }

@@ -1,15 +1,69 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
-public class SpinnerHand : MonoBehaviour {
+public class SpinnerHand : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public string buttonName = "P1B2";
+    public float spinBaseSpeed = 60;
+    public float spinSpeedModifier = 1;
+    private bool deactivated = false;
+    public float deactivationDuration = 1;
+
+    public UnityEvent PulseEvent;
+    public UnityEvent BoostEvent;
+
+    void Update()
+    {
+
+        if (deactivated == false)
+        {
+
+            float spinSpeed = spinBaseSpeed * spinSpeedModifier;
+
+            transform.rotation = Quaternion.AngleAxis(Time.time * spinSpeed, new Vector3(0, 0, 1));
+
+            float angle = transform.rotation.eulerAngles.z;
+
+            //print(transform.rotation.eulerAngles.z.ToString("#.00"));
+
+            if (Input.GetButtonDown(buttonName))
+            {
+                if (deactivated == false)
+                {
+                    deactivated = true;
+
+                    if (angle >= 0 && angle < 90)
+                    {
+                        BoostEvent.Invoke();
+                    }
+                    else if (angle >= 90 && angle < 180)
+                    {
+                        BoostEvent.Invoke();
+                    }
+                    else if (angle >= 180 && angle < 270)
+                    {
+                        PulseEvent.Invoke();
+                    }
+                    else if (angle >= 270)
+                    {
+                        PulseEvent.Invoke();
+                    }
+
+                    StartCoroutine(deactivationTimer());
+                }
+            }
+
+        }
+
+        //Debug.Log (deactivated);
+
+    }
+
+    private IEnumerator deactivationTimer()
+    {
+        yield return new WaitForSeconds(deactivationDuration);
+        deactivated = false;
+    }
 }

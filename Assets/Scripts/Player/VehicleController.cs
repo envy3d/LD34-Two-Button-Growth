@@ -22,6 +22,8 @@ public class VehicleController : MonoBehaviour
 
     private float currMaxVelocity;
     private float modifiedMaxVelocity;
+    private bool canControlSteering = true;
+    private bool canControlEngine = true;
 
     void Start()
     {
@@ -32,25 +34,9 @@ public class VehicleController : MonoBehaviour
 
     void Update()
     {
-        // Turning control
-        if (Input.GetButton(turnInputButton))
+        if (canControlSteering)
         {
-            // If the button was pressed this frame, reset turn variables and change turn direction.
-            if (Input.GetButtonDown(turnInputButton))
-            {
-                turnStartTime = Time.time;
-                currTurnDirection = turningSelection.GetNewTurningDirection(currTurnDirection);
-            }
-            // If the button is being held, advance turn variables.
-            else
-            {
-                currTurnAngle = currTurnDirection * turningAngleCurve.Evaluate(Time.time - turnStartTime);
-            }
-        }
-        // If the vehicle should no longer be turning, stop turning.
-        else
-        {
-            currTurnAngle = 0;
+            UpdateTurnSpeed();
         }
 
         //rb.AddTorque(currTurnAngle);
@@ -59,7 +45,10 @@ public class VehicleController : MonoBehaviour
         // Force vector creation
         DrawDebugRays();
 
-        UpdateWheelForce();
+        if (canControlEngine)
+        {
+            UpdateWheelForce();
+        }
     }
 
     void FixedUpdate()
@@ -102,6 +91,30 @@ public class VehicleController : MonoBehaviour
         wheelForce = Vector3.up * maxForce * acc;
     }
 
+    private void UpdateTurnSpeed()
+    {
+        // Turning control
+        if (Input.GetButton(turnInputButton))
+        {
+            // If the button was pressed this frame, reset turn variables and change turn direction.
+            if (Input.GetButtonDown(turnInputButton))
+            {
+                turnStartTime = Time.time;
+                currTurnDirection = turningSelection.GetNewTurningDirection(currTurnDirection);
+            }
+            // If the button is being held, advance turn variables.
+            else
+            {
+                currTurnAngle = currTurnDirection * turningAngleCurve.Evaluate(Time.time - turnStartTime);
+            }
+        }
+        // If the vehicle should no longer be turning, stop turning.
+        else
+        {
+            currTurnAngle = 0;
+        }
+    }
+
     private void DrawDebugRays()
     {
         Debug.DrawRay(transform.position, rb.velocity, Color.green);
@@ -112,15 +125,57 @@ public class VehicleController : MonoBehaviour
 
     public void Boost()
     {
-        //Debug.Log("start boost");
-        maxForce += 2400;
-        StartCoroutine(StopTime());
+        if (canControlEngine)
+        {
+            maxForce += 2400;
+            StopCoroutine("Boosting");
+            StartCoroutine(Boosting());
+        }
     }
 
-    private IEnumerator StopTime()
+    private IEnumerator Boosting()
     {
         yield return new WaitForSeconds(2);
         maxForce -= 2400;
-        //Debug.Log("end");
     }
+
+    public void SpinOut(float spinSpeed, float spinTime, AnimationCurve curve)
+    {
+        canControlSteering = false;
+        StopCoroutine("SpinningOut");
+        StartCoroutine(SpinningOut(spinSpeed, spinTime, curve));
+    }
+
+    private IEnumerator SpinningOut(float spinSpeed, float spinTime, AnimationCurve curve)
+    {
+        float timer = 0;
+        while (timer <= spinTime)
+        {
+            currTurnAngle = Mathf.Sign(currTurnAngle) * curve.Evaluate(timer / spinTime) * spinSpeed;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        canControlSteering = true;
+    }
+
+    public void KillEngine(float time)
+    {
+        canControlEngine = false;
+        StopCoroutine("KillingEngine");
+        StartCoroutine(KillingEngine(time));
+    }
+
+    private IEnumerator KillingEngine(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canControlEngine = true;
+    }
+
+    public void StartCar()
+    {
+        canControlEngine = true;
+        canControlSteering = true;
+    }
+
 }

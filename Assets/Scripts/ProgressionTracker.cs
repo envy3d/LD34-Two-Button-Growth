@@ -11,56 +11,62 @@ public class ProgressionTracker : MonoBehaviour
 
     void Start()
     {
-	    foreach (VehicleProgressionInfo pt in progressInfo)
+        if (progressInfo != null && trackSpline != null)
         {
-            pt.transform = pt.vc.transform;
-            pt.currentLap = 0;
-            pt.rank = 1;
-            pt.UpdateProgress(0);
+            foreach (VehicleProgressionInfo pt in progressInfo)
+            {
+                pt.transform = pt.vc.transform;
+                pt.currentLap = 0;
+                pt.rank = 1;
+                pt.UpdateProgress(0);
+            }
         }
 	}
 	
 	void Update()
     {
-        totalProgressRank.Clear();
-        foreach (VehicleProgressionInfo pt in progressInfo)
+        if (progressInfo != null && trackSpline != null)
         {
-            float prevProgress = pt.progress;
-            float progress = GetSplineDistanceToNearestPoint(pt.transform.position, pt.progress, 10, 0.01f, 3);
-            if (prevProgress < 0.1 && progress > 0.3)
+            totalProgressRank.Clear();
+            foreach (VehicleProgressionInfo pt in progressInfo)
             {
-                progress = 0;
-            }
-            else if (prevProgress > 0.9 && progress < 0.1)
-            {
-                pt.currentLap += 1;
-            }
-            pt.UpdateProgress(progress);
-
-            totalProgressRank.Add(pt.totalProgress);
-        }
-
-        totalProgressRank.Sort();
-        totalProgressRank.Reverse();
-
-        foreach (VehicleProgressionInfo pt in progressInfo)
-        {
-            for (int i = 0; i < totalProgressRank.Count; i++)
-            {
-                print(totalProgressRank[i]);
-                if (pt.totalProgress == totalProgressRank[i])
+                float prevProgress = pt.progress;
+                float progress = GetSplineDistanceToNearestPoint(pt.transform.position, pt.progress, 10, 0.01f, 3);
+                if (prevProgress < 0.1 && progress > 0.3)
                 {
-                    pt.rank = i + 1;
-                    break;
+                    progress = 0;
                 }
-            }
-            if (pt.currentLap == 3)
-            {
-                // End game
-
-                foreach (VehicleProgressionInfo pj in progressInfo)
+                else if (prevProgress > 0.9 && progress < 0.1)
                 {
-                    pj.vc.EndCar();
+                    pt.currentLap += 1;
+                }
+                pt.UpdateProgress(progress);
+
+                totalProgressRank.Add(pt.totalProgress);
+            }
+
+            totalProgressRank.Sort();
+            totalProgressRank.Reverse();
+
+            foreach (VehicleProgressionInfo pt in progressInfo)
+            {
+                for (int i = 0; i < totalProgressRank.Count; i++)
+                {
+                    print(totalProgressRank[i]);
+                    if (pt.totalProgress == totalProgressRank[i])
+                    {
+                        pt.rank = i + 1;
+                        break;
+                    }
+                }
+                if (pt.currentLap == 3)
+                {
+                    // End game
+
+                    foreach (VehicleProgressionInfo pj in progressInfo)
+                    {
+                        pj.vc.EndCar();
+                    }
                 }
             }
         }

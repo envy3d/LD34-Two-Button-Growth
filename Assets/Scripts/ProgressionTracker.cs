@@ -23,6 +23,7 @@ public class ProgressionTracker : MonoBehaviour
 
     void Start()
     {
+		audioSource = GetComponent<AudioSource> ();
         if (progressInfo != null && trackSpline != null)
         {
             foreach (VehicleProgressionInfo pt in progressInfo)

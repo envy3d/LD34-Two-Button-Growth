@@ -133,7 +133,7 @@ public class VehicleController : MonoBehaviour
     {
         if (canControlEngine)
         {
-            maxForce += 2400;
+            maxForce += 800;
             StopCoroutine("Boosting");
             StartCoroutine(Boosting());
         }
@@ -142,7 +142,7 @@ public class VehicleController : MonoBehaviour
     private IEnumerator Boosting()
     {
         yield return new WaitForSeconds(2);
-        maxForce -= 2400;
+        maxForce -= 800;
     }
 
     public void SpinOut(float spinSpeed, float spinTime, AnimationCurve curve)

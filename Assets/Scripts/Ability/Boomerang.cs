@@ -14,11 +14,15 @@ public class Boomerang : MonoBehaviour
     public AnimationCurve targetSpinCurve;
     public float targetKillEngineTime = 0.8f;
 
+    public AudioClip audioHit;
+
     private Rigidbody rb;
     private GameObject launchedFromGO;
+    private AudioSource audioSource;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         rb.AddRelativeForce(Vector3.up * launchForce, ForceMode.Impulse);
 
@@ -35,12 +39,14 @@ public class Boomerang : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("vehicle"))
         {
+            audioSource.PlayOneShot(audioHit);
             VehicleController vc = other.GetComponent<VehicleController>();
             if (vc != null && vc.gameObject != launchedFromGO)
             {
                 vc.SpinOut(targetSpinOutAmout, targetSpinTime, targetSpinCurve);
                 vc.KillEngine(targetKillEngineTime);
-                Destroy(gameObject);
+                vc.PlayAudio(vc.audioGotHit);
+                Destroy(gameObject, 0.2f);
             }
         }
     }

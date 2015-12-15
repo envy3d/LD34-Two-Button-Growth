@@ -11,6 +11,7 @@ public class SpinnerHand : MonoBehaviour
     public float boostedSpinSpeedModifier = 2;
     public float spinnerBoostedTime = 3;
     public float deactivationDuration = 1;
+    public Animator spinnerSelectionAnim;
 
     public UnityEvent PulseEvent;
     public UnityEvent BoostEvent;
@@ -44,18 +45,26 @@ public class SpinnerHand : MonoBehaviour
 
                     if (angle >= 0 && angle < 90)
                     {
+                        spinnerSelectionAnim.gameObject.SetActive(true);
+                        spinnerSelectionAnim.transform.rotation = Quaternion.Euler(0, 0, 0);
                         BoostEvent.Invoke();
                     }
                     else if (angle >= 90 && angle < 180)
                     {
+                        spinnerSelectionAnim.gameObject.SetActive(true);
+                        spinnerSelectionAnim.transform.rotation = Quaternion.Euler(0, 0, 90);
                         BoomerangEvent.Invoke();
                     }
                     else if (angle >= 180 && angle < 270)
                     {
+                        spinnerSelectionAnim.gameObject.SetActive(true);
+                        spinnerSelectionAnim.transform.rotation = Quaternion.Euler(0, 0, 180);
                         PulseEvent.Invoke();
                     }
                     else if (angle >= 270)
                     {
+                        spinnerSelectionAnim.gameObject.SetActive(true);
+                        spinnerSelectionAnim.transform.rotation = Quaternion.Euler(0, 0, 270);
                         SpinnerSpeedAttack();
                     }
 
@@ -106,6 +115,7 @@ public class SpinnerHand : MonoBehaviour
     {
         yield return new WaitForSeconds(deactivationDuration);
         deactivated = false;
+        spinnerSelectionAnim.gameObject.SetActive(false);
     }
 
     public void BoostSpinnerSpeed()

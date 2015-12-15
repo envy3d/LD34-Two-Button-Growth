@@ -173,8 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f521c54473050424bae14bb005c69c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  launchForce: 45
-  returnForce: 15
+  launchForce: 32
+  returnForce: 20
   maxVelocity: 30
   lifetime: 15
   targetSpinOutAmout: 1200
@@ -308,6 +308,14 @@ Prefab:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 74e66632879736e4eb0da103551ac876, type: 3}
+    - target: {fileID: 0}
+      propertyPath: launchForce
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: returnForce
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 147208}

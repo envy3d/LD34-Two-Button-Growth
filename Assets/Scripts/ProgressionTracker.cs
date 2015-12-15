@@ -157,6 +157,6 @@ public class ProgressionTracker : MonoBehaviour
     private IEnumerator EndGame()
     {
         yield return new WaitForSeconds(postGameTime);
-        SceneManager.LoadScene("title");
+        SceneManager.LoadScene("Title");
     }
 }

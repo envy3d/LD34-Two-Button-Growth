@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class ProgressionTracker : MonoBehaviour
 {
@@ -7,7 +9,17 @@ public class ProgressionTracker : MonoBehaviour
     public int numberOfLaps = 3;
     public VehicleProgressionInfo[] progressInfo;
 
+    public AudioClip announceLap2;
+    public AudioClip announceLap3;
+    public AudioSource lap2Music;
+    public AudioSource lap3Music;
+    public AnimationCurve musicFadeInCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public float musicFadeInTime = 0.5f;
+    public float postGameTime = 3;
+
     private List<float> totalProgressRank = new List<float>();
+    private int currentHighestLap = 0;
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -39,6 +51,26 @@ public class ProgressionTracker : MonoBehaviour
                 else if (prevProgress > 0.9 && progress < 0.1)
                 {
                     pt.currentLap += 1;
+                    if (pt.currentLap > currentHighestLap)
+                    {
+                        currentHighestLap = pt.currentLap;
+                        if (currentHighestLap == 1)
+                        {
+                            StartCoroutine(FadeInMusic(lap2Music));
+                            audioSource.clip = announceLap2;
+                            audioSource.Play();
+                        }
+                        else if (currentHighestLap == 2)
+                        {
+                            StartCoroutine(FadeInMusic(lap3Music));
+                            audioSource.clip = announceLap3;
+                            audioSource.Play();
+                        }
+                        else if (currentHighestLap == 3)
+                        {
+                            pt.vc.PlayAudio(pt.vc.audioWin);
+                        }
+                    }
                 }
                 pt.UpdateProgress(progress);
 
@@ -52,10 +84,15 @@ public class ProgressionTracker : MonoBehaviour
             {
                 for (int i = 0; i < totalProgressRank.Count; i++)
                 {
-                    print(totalProgressRank[i]);
+                    //print(totalProgressRank[i]);
                     if (pt.totalProgress == totalProgressRank[i])
                     {
+                        int prevRank = pt.rank;
                         pt.rank = i + 1;
+                        if (prevRank != 1 && pt.rank == 1)
+                        {
+                            pt.vc.PlayAudio(pt.vc.audioSuccess);
+                        }
                         break;
                     }
                 }
@@ -103,5 +140,23 @@ public class ProgressionTracker : MonoBehaviour
                                                numberOfSamples,
                                                sampleSpacing / numberOfSamples,
                                                recursionDepth - 1);
+    }
+
+    private IEnumerator FadeInMusic(AudioSource source)
+    {
+        float timer = 0;
+        while (timer <= musicFadeInTime)
+        {
+            yield return null;
+            source.volume = musicFadeInCurve.Evaluate(timer / musicFadeInTime);
+            timer += Time.deltaTime;
+        }
+        source.volume = 1;
+    }
+
+    private IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(postGameTime);
+        SceneManager.LoadScene("title");
     }
 }

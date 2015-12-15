@@ -9,7 +9,7 @@ public class VehicleProgressionInfo
     [NonSerialized]
     public Transform transform;
     public int currentLap;
-    public int rank;
+    public int rank = 1;
     public float progress;
     public float totalProgress;
 

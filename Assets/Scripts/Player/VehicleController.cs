@@ -12,6 +12,10 @@ public class VehicleController : MonoBehaviour
     public float maxForce = 25;
     public float maxAngularVelocity = 180;
     public AnimationCurve turningAngleCurve = AnimationCurve.Linear(0, 0, 2, 50);
+    public AudioClip audioGotHit;
+    public AudioClip audioSuccess;
+    public AudioClip audioWin;
+
 
     private Rigidbody rb;
     private ITurningSelection turningSelection;
@@ -24,11 +28,13 @@ public class VehicleController : MonoBehaviour
     private float modifiedMaxVelocity;
     private bool canControlSteering = true;
     private bool canControlEngine = true;
+    private AudioSource audioSource;
 
     void Start()
     {
         turningSelection = new TurningFlipFlopSelection();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -182,6 +188,11 @@ public class VehicleController : MonoBehaviour
     {
         canControlEngine = false;
         canControlSteering = false;
+    }
+
+    public void PlayAudio(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 
 }

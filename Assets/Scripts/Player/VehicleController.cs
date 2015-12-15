@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class VehicleController : MonoBehaviour
 {
-    public string turnInputButton = "Jump";
-
+    public string turnInputButton = "P1B1";
+    public event EventHandler<CombinedModifierEventArgs> OnModifyWheelForce;
+    CombinedModifierEventArgs wheelForceModEventArgs = new CombinedModifierEventArgs();
     public float maxVelocity = 10;
     public float maxForce = 25;
     public float maxAngularVelocity = 180;
@@ -18,17 +20,81 @@ public class VehicleController : MonoBehaviour
     private int currTurnDirection = 1;
     private Vector3 wheelForce = Vector3.zero;
 
-	void Start()
+    private float currMaxVelocity;
+    private float modifiedMaxVelocity;
+    private bool canControlSteering = true;
+    private bool canControlEngine = true;
+
+    void Start()
     {
         turningSelection = new TurningFlipFlopSelection();
         rb = GetComponent<Rigidbody>();
-	}
-	
-	
-	void Update()
+    }
+
+
+    void Update()
+    {
+        if (canControlSteering)
+        {
+            UpdateTurnSpeed();
+        }
+
+        //rb.AddTorque(currTurnAngle);
+        //rb.AddRelativeTorque(Vector3.back * currTurnAngle);
+
+        // Force vector creation
+        DrawDebugRays();
+
+        if (canControlEngine)
+        {
+            UpdateWheelForce();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        // Limit velocity
+        //rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
+        rb.velocity = Vector3.ClampMagnitude(Vector3.Project(rb.velocity, transform.localToWorldMatrix * Vector3.up), maxVelocity) +
+                      Vector3.Project(rb.velocity, transform.localToWorldMatrix * Vector3.right);
+        //rb.angularVelocity = new Vector3(0, 0, Mathf.Clamp(rb.angularVelocity.z,
+        //                                                   -maxAngularVelocity * Mathf.Deg2Rad,
+        //                                                   maxAngularVelocity * Mathf.Deg2Rad));
+
+        rb.MoveRotation(rb.rotation * Quaternion.AngleAxis(currTurnAngle * Time.fixedDeltaTime, Vector3.back));
+
+        //Debug.Log(rb.angularVelocity.z * Mathf.Rad2Deg);
+        //Debug.Log(currTurnAngle);
+
+        // Force vector application
+        rb.AddRelativeForce(wheelForce);
+        // rb.AddRelativeTorque(Vector3.back * currTurnAngle);
+    }
+
+    private void UpdateWheelForce()
+    {
+        float acc = 1;
+        if (OnModifyWheelForce != null)
+        {
+            if (wheelForceModEventArgs == null)
+            {
+                wheelForceModEventArgs = new CombinedModifierEventArgs();
+            }
+            wheelForceModEventArgs.ResetModifiers();
+            OnModifyWheelForce(this, wheelForceModEventArgs);
+            foreach (float f in wheelForceModEventArgs.GetModifiers())
+            {
+                acc *= f;
+            }
+            //Debug.Log(wheelForceModEventArgs.GetModifiers().Count);
+        }
+        wheelForce = Vector3.up * maxForce * acc;
+    }
+
+    private void UpdateTurnSpeed()
     {
         // Turning control
-	    if (Input.GetButton(turnInputButton))
+        if (Input.GetButton(turnInputButton))
         {
             // If the button was pressed this frame, reset turn variables and change turn direction.
             if (Input.GetButtonDown(turnInputButton))
@@ -47,37 +113,75 @@ public class VehicleController : MonoBehaviour
         {
             currTurnAngle = 0;
         }
+    }
 
-        //rb.AddTorque(currTurnAngle);
-        //rb.AddRelativeTorque(Vector3.back * currTurnAngle);
-
-        // Force vector creation
+    private void DrawDebugRays()
+    {
         Debug.DrawRay(transform.position, rb.velocity, Color.green);
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * wheelForce, Color.cyan);
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * new Vector3(-rb.angularVelocity.z, 0, 0), Color.yellow);
         Debug.DrawRay(transform.position, transform.localToWorldMatrix * new Vector3(currTurnAngle, 0, 0), Color.blue);
-
-        wheelForce = Vector3.up * maxForce;
-
     }
 
-    void FixedUpdate()
+    public void Boost()
     {
-        // Limit velocity
-        //rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
-        rb.velocity = Vector3.ClampMagnitude(Vector3.Project(rb.velocity, Vector3.up), maxVelocity) +
-                      Vector3.Project(rb.velocity, Vector3.right);
-        //rb.angularVelocity = new Vector3(0, 0, Mathf.Clamp(rb.angularVelocity.z,
-        //                                                   -maxAngularVelocity * Mathf.Deg2Rad,
-        //                                                   maxAngularVelocity * Mathf.Deg2Rad));
-
-        rb.MoveRotation(rb.rotation * Quaternion.AngleAxis(currTurnAngle * Time.fixedDeltaTime, Vector3.back));
-
-        //Debug.Log(rb.angularVelocity.z * Mathf.Rad2Deg);
-        //Debug.Log(currTurnAngle);
-
-        // Force vector application
-        rb.AddRelativeForce(wheelForce);
-       // rb.AddRelativeTorque(Vector3.back * currTurnAngle);
+        if (canControlEngine)
+        {
+            maxForce += 2400;
+            StopCoroutine("Boosting");
+            StartCoroutine(Boosting());
+        }
     }
+
+    private IEnumerator Boosting()
+    {
+        yield return new WaitForSeconds(2);
+        maxForce -= 2400;
+    }
+
+    public void SpinOut(float spinSpeed, float spinTime, AnimationCurve curve)
+    {
+        canControlSteering = false;
+        StopCoroutine("SpinningOut");
+        StartCoroutine(SpinningOut(spinSpeed, spinTime, curve));
+    }
+
+    private IEnumerator SpinningOut(float spinSpeed, float spinTime, AnimationCurve curve)
+    {
+        float timer = 0;
+        while (timer <= spinTime)
+        {
+            currTurnAngle = Mathf.Sign(currTurnAngle) * curve.Evaluate(timer / spinTime) * spinSpeed;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        canControlSteering = true;
+    }
+
+    public void KillEngine(float time)
+    {
+        canControlEngine = false;
+        StopCoroutine("KillingEngine");
+        StartCoroutine(KillingEngine(time));
+    }
+
+    private IEnumerator KillingEngine(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canControlEngine = true;
+    }
+
+    public void StartCar()
+    {
+        canControlEngine = true;
+        canControlSteering = true;
+    }
+
+    public void EndCar()
+    {
+        canControlEngine = false;
+        canControlSteering = false;
+    }
+
 }

@@ -12,6 +12,7 @@ public class SpinnerHand : MonoBehaviour
     public float spinnerBoostedTime = 3;
     public float deactivationDuration = 1;
     public Animator spinnerSelectionAnim;
+    public AudioSource audioPulse;
 
     public UnityEvent PulseEvent;
     public UnityEvent BoostEvent;
@@ -21,6 +22,11 @@ public class SpinnerHand : MonoBehaviour
     private float spinSpeedModifier = 1;
     private bool deactivated = false;
     private List<SpinnerHand> enemySpinners;
+
+    void Start()
+    {
+        audioPulse = GetComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -59,6 +65,7 @@ public class SpinnerHand : MonoBehaviour
                     {
                         spinnerSelectionAnim.gameObject.SetActive(true);
                         spinnerSelectionAnim.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        audioPulse.Play();
                         PulseEvent.Invoke();
                     }
                     else if (angle >= 270)

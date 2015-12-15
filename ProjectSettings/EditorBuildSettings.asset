@@ -6,4 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Title.unity
+  - enabled: 1
+    path: Assets/Scenes/Selection.unity
+  - enabled: 1
+    path: Assets/Scenes/Dev/jeremy_dev_2.unity
+  - enabled: 0
     path: Assets/Scenes/Dev/multiplayer_dev_1.unity
